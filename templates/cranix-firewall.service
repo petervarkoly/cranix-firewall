@@ -1,0 +1,12 @@
+[Unit]
+Description=CRANIX Firewall
+After=local-fs.target
+After=network.target
+
+[Service]
+ExecStart=/usr/sbin/crx_firewall.py
+RemainAfterExit=true
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target
