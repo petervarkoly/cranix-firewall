@@ -4,6 +4,7 @@ After=local-fs.target
 After=network.target
 
 [Service]
+ExecStartPre=/usr/share/cranix/tools/firewall/setup_firewall.sh
 ExecStart=/usr/sbin/crx_firewall.py
 RemainAfterExit=true
 Type=oneshot

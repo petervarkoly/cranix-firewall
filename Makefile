@@ -6,15 +6,16 @@ SYSTEMD         = $(DESTDIR)/usr/lib/systemd/system/
 TOOLS           = $(DESTDIR)/usr/share/cranix/tools/firewall/
 TEMPLATES       = $(DESTDIR)/usr/share/cranix/templates/firewall/
 DOCS            = $(DESTDIR)/usr/share/doc/packages/cranix-firewall
-TOPACKAGE       = Makefile LICENSE README.md templates bin
+TOPACKAGE       = Makefile LICENSE README.md templates sbin tools
 HERE            = $(shell pwd)
 REPO            = /data1/OSC/home:pvarkoly:CRANIX
 PACKAGE         = cranix-firewall
 
 install:
 	mkdir -p $(SYSTEMD) $(TOOLS) $(TEMPLATES) $(DOCS) $(DESTDIR)/usr/sbin/
-	install -m 755 bin/crx_firewall.py $(DESTDIR)/usr/sbin/
-	install -m 755 bin/setup_firewall.sh $(TOOLS)
+	install -m 755 sbin/* $(DESTDIR)/usr/sbin/
+	install -m 755 tools/* $(TOOLS)
+	install -m 755 bin/convert_firewalld_to_cranix.py $(TOOLS)
 	install -m 644 LICENSE README.md $(DOCS)
 	install -m 644 templates/*conf $(TEMPLATES)
 	install -m 644 templates/cranix-firewall.service $(SYSTEMD)
