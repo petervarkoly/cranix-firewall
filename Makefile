@@ -5,13 +5,13 @@ DESTDIR         = /
 SYSTEMD         = $(DESTDIR)/usr/lib/systemd/system/
 TOOLS           = $(DESTDIR)/usr/share/cranix/tools/firewall/
 TEMPLATES       = $(DESTDIR)/usr/share/cranix/templates/firewall/
-TOPACKAGE       = Makefile LICENSE README.md templates sbin tools
+TOPACKAGE       = Makefile LICENSE README.md templates sbin tools bin
 HERE            = $(shell pwd)
 REPO            = /data1/OSC/home:pvarkoly:CRANIX
 PACKAGE         = cranix-firewall
 
 install:
-	mkdir -p $(SYSTEMD) $(TOOLS) $(TEMPLATES) $(DOCS) $(DESTDIR)/usr/bin $(DESTDIR)/usr/sbin
+	mkdir -p $(SYSTEMD) $(TOOLS) $(TEMPLATES) $(DOCS) $(DESTDIR)/usr/bin/ $(DESTDIR)/usr/sbin/
 	install -m 755 sbin/* $(DESTDIR)/usr/sbin/
 	install -m 755 bin/* $(DESTDIR)/usr/bin/
 	install -m 755 tools/* $(TOOLS)
