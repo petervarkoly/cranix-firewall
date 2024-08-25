@@ -41,10 +41,10 @@ for zone, nat_rules in config.get("nat_rules", {}).items():
 # Port forwarding rules.
 for zone, port_forward_rules in config.get("port_forward_rules", {}).items():
     device = config['devices'][zone]
-    for proto, dport, to_ip, to_port in port_forward_rules.items():
-        command = f"/usr/sbin/iptables -t nat -A PREROUTING -p {proto} -i {device} -dport {dport} -j DNAT --to-destination {to_ip}:{to_port}"
+    for rule in port_forward_rules:
+        command = f"/usr/sbin/iptables -t nat -A PREROUTING -p {rule['proto']} -i {rule['device']} -dport {rule['dport']} -j DNAT --to-destination {rule['to_ip']}:{rule['to_port']}"
         subprocess.run(command, shell=True)
-        command = f"/usr/sbin/iptables -A FORWARD -p {proto} -d {to_ip} --dport 8080 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT"
+        command = f"/usr/sbin/iptables -A FORWARD -p {rule['proto']} -d {rule['to_ip']} --dport 8080 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT"
         subprocess.run(command, shell=True)
 
 for post in config.get("post_rules", []):
