@@ -63,9 +63,11 @@ def open_fw():
     for open in config.get("open_rules", []):
         subprocess.run(pre, shell=True)
 
-if argv[1] == "stop":
+if len(sys.argv) == 1 or sys.argv[1] == "start":
+    start_fw()
+elif sys.argv[1] == "stop":
     stop_fw()
-elif argv[1] == "open":
+elif sys.argv[1] == "open":
     open_fw()
 else:
-    start_fw()
+    print("Unknown parameter. Valid parameters are start, stop, open")
