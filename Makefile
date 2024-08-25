@@ -11,7 +11,7 @@ REPO            = /data1/OSC/home:pvarkoly:CRANIX
 PACKAGE         = cranix-firewall
 
 install:
-	mkdir -p $(SYSTEMD) $(TOOLS) $(TEMPLATES) $(DOCS) $(DESTDIR)/usr/sbin/
+	mkdir -p $(SYSTEMD) $(TOOLS) $(TEMPLATES) $(DOCS) $(DESTDIR)/usr/{bin,sbin}
 	install -m 755 sbin/* $(DESTDIR)/usr/sbin/
 	install -m 755 bin/* $(DESTDIR)/usr/bin/
 	install -m 755 tools/* $(TOOLS)
