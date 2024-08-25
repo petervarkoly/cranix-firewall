@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 from lxml import etree
 import json
-import subprocess
 
 CRANIX_FW_CONFIG="/etc/cranix-firewall.conf"
 config = json.load(open(CRANIX_FW_CONFIG))
