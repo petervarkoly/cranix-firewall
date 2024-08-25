@@ -13,6 +13,7 @@ PACKAGE         = cranix-firewall
 install:
 	mkdir -p $(SYSTEMD) $(TOOLS) $(TEMPLATES) $(DOCS) $(DESTDIR)/usr/sbin/
 	install -m 755 sbin/* $(DESTDIR)/usr/sbin/
+	install -m 755 bin/* $(DESTDIR)/usr/bin/
 	install -m 755 tools/* $(TOOLS)
 	install -m 644 templates/*conf $(TEMPLATES)
 	install -m 644 templates/cranix-firewall.service $(SYSTEMD)

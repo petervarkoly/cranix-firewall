@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -e /etc/cranix-firewall.conf -o -e /var/lib/YaST2/reconfig_system ]; then
+if [ -e /etc/cranix-firewall.conf -o ! -e /etc/sysctl.d/cranix.conf ]; then
 	exit
 fi
 . /etc/sysconfig/cranix
