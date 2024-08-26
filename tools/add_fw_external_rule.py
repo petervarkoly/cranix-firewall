@@ -6,9 +6,11 @@ import sys
 
 CRANIX_FW_CONFIG="/etc/cranix-firewall.conf"
 
+#Read new services and ports from standard input
+rule=json.loads(input(""))
 config = json.load(open(CRANIX_FW_CONFIG))
-if sys.argv[1] not in config["nat_rules"]["external"]:
-    config["nat_rules"]["external"] = { sys.argv[1]: "" }
+if rule not in config["nat_rules"]["external"]:
+    config["nat_rules"]["external"].append(rule)
     with open(CRANIX_FW_CONFIG,"w") as f:
         json.dump(config, f, indent=True)
     os.system("/usr/sbin/crx_firewall.py")

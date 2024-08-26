@@ -32,13 +32,20 @@ def start_fw():
     # NAT rules
     for zone, nat_rules in config.get("nat_rules", {}).items():
         device = config['devices'][zone]
-        for ip_range, to_source in nat_rules.items():
-            if to_source == "":
-                command = f"/usr/sbin/iptables -t nat -A POSTROUTING -s {ip_range} -o {device} -j MASQUERADE"
+        for rule in nat_rules:
+            command = f"/usr/sbin/iptables -t nat -A POSTROUTING  -s {rule['source']} -o {device}"
+            if rule.get('proto',"all") != "all":
+                command += f" -p {rule['proto']}"
+            if rule.get('dest',"0/0") != "0/0":
+                command += f" -d {rule['dest']}"
+            if rule.get('to_source',"") != "":
+                command += f"  -j SNAT --to-source {rule['to_source']}"
             else:
-                command = f"/usr/sbin/iptables -t nat -A POSTROUTING -s {ip_range} -o {device} -j SNAT --to-source {to_source}"
+                command += f"  -j MASQUERADE"
             subprocess.run(command, shell=True)
-            command = f"/usr/sbin/iptables -A FORWARD -s {ip_range} -o {device} -j ACCEPT"
+            command = f"/usr/sbin/iptables -A FORWARD -s {source} -o {device} -j ACCEPT"
+            if rule.get('dest',"") != "":
+                command += f" -d {rule['dest']}"
             subprocess.run(command, shell=True)
 
     # Port forwarding rules.
