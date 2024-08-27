@@ -28,6 +28,13 @@ with open("/etc/firewalld/zones/external.xml") as f:
     if type(rules) is list:
         for tag in rules:
             if tag[1].tag == "masquerade":
-                config["nat_rules"]["external"][tag[0].get("address")] = ""
+                rule =  {
+                    "dest": "",
+                    "source": tag[0].get("address"),
+                    "to_source": "",
+                    "proto": ""
+                }
+                if rule not in config["nat_rules"]["external"]:
+                    config["nat_rules"]["external"].append(rule)
 with open(CRANIX_FW_CONFIG,"w") as f:
     json.dump(config, f, indent=True)
