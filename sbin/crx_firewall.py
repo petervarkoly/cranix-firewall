@@ -3,13 +3,20 @@
 import json
 import subprocess
 import sys
+import cranixconfig
 
 CRANIX_FW_CONFIG="/etc/cranix-firewall.conf"
 config = json.load(open(CRANIX_FW_CONFIG))
 
+def log_debug(msg):
+    if cranixconfig.CRANIX_DEBUG == "yes":
+        print(msg)
+
+
 def start_fw():
 
     for pre in config.get("pre_rules", []):
+        log_debug(pre)
         subprocess.run(pre, shell=True)
 
     # Open ports to devices
@@ -18,6 +25,7 @@ def start_fw():
         for port in ip_ports:
             num, prot = port.split("/")
             command = f"/usr/sbin/iptables -A INPUT -i {device} -p {prot} --dport {num} -j ACCEPT"
+            log_debug(command)
             subprocess.run(command, shell=True)
 
     # Open ports to devices from ip adressess
@@ -27,6 +35,7 @@ def start_fw():
             for port in ports:
                 num, prot = port.split("/")
                 command = f"/usr/sbin/iptables -A INPUT -i {device} -p {prot} --dport {num} -s {ip_range} -j ACCEPT"
+                log_debug(command)
                 subprocess.run(command, shell=True)
 
     # NAT rules
@@ -34,18 +43,20 @@ def start_fw():
         device = config['devices'][zone]
         for rule in nat_rules:
             command = f"/usr/sbin/iptables -t nat -A POSTROUTING  -s {rule['source']} -o {device}"
-            if rule.get('proto',"all") != "all":
+            if rule.get('proto',"all") != "all" and rule.get('proto',"all") != "":
                 command += f" -p {rule['proto']}"
-            if rule.get('dest',"0/0") != "0/0":
+            if rule.get('dest',"0/0") != "0/0" and rule.get('dest',"") != "" :
                 command += f" -d {rule['dest']}"
             if rule.get('to_source',"") != "":
                 command += f"  -j SNAT --to-source {rule['to_source']}"
             else:
                 command += f"  -j MASQUERADE"
+            log_debug(command)
             subprocess.run(command, shell=True)
-            command = f"/usr/sbin/iptables -A FORWARD -s {source} -o {device} -j ACCEPT"
+            command = f"/usr/sbin/iptables -A FORWARD -s {rule['source']} -o {device} -j ACCEPT"
             if rule.get('dest',"") != "":
                 command += f" -d {rule['dest']}"
+            log_debug(command)
             subprocess.run(command, shell=True)
 
     # Port forwarding rules.
@@ -53,12 +64,14 @@ def start_fw():
         device = config['devices'][zone]
         for rule in port_forward_rules:
             command = f"/usr/sbin/iptables -t nat -A PREROUTING -p {rule['proto']} -i {device} --dport {rule['dport']} -j DNAT --to-destination {rule['to_addr']}:{rule['to_port']}"
+            log_debug(command)
             subprocess.run(command, shell=True)
-            print(command)
             command = f"/usr/sbin/iptables -A FORWARD -p {rule['proto']} -d {rule['to_addr']} --dport {rule['to_port']} -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT"
+            log_debug(command)
             subprocess.run(command, shell=True)
 
     for post in config.get("post_rules", []):
+        log_debug(post)
         subprocess.run(post, shell=True)
 
 def stop_fw():
