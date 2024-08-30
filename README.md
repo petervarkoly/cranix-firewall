@@ -29,7 +29,8 @@ The firewall will be started by executing `/usr/sbin/crx_firewall.py`. This prog
 
 The standard configuration after installing cranix-firewall:
 
-`{
+```
+{
      "open_rules": [
          "iptables -t mangle -F",
          "iptables -t nat -F",
@@ -85,7 +86,7 @@ The standard configuration after installing cranix-firewall:
         "test -e /usr/share/cranix/tools/custom/fw-post-start.sh && /usr/share/cranix/tools/custom/fw-post-start.sh"
     ]
 }
-`
+```
 
 You can edit this configurtation file. After each change you have to start cranix-firewall again. This file will be modified by cranix-api if you defines new incomming outgoing or remote access rules. 
 * The incomming rules take place in open_ports.external section.
