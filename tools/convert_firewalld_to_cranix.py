@@ -19,7 +19,7 @@ with open("/etc/firewalld/zones/external.xml") as f:
             rule = {
                 "proto": tag.get("protocol"),
                 "dport": tag.get("port"),
-                "to_addr": tag.get("to-addr"),
+                "to_ip": tag.get("to-addr"),
                 "to_port": tag.get("to-port"),
             }
             if rule not in config["port_forward_rules"]["external"]:

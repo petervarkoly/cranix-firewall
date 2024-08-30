@@ -63,10 +63,13 @@ def start_fw():
     for zone, port_forward_rules in config.get("port_forward_rules", {}).items():
         device = config['devices'][zone]
         for rule in port_forward_rules:
-            command = f"/usr/sbin/iptables -t nat -A PREROUTING -p {rule['proto']} -i {device} --dport {rule['dport']} -j DNAT --to-destination {rule['to_addr']}:{rule['to_port']}"
+            command = f"/usr/sbin/iptables -t nat -A PREROUTING -p {rule['proto']} -i {device} --dport {rule['dport']} -j DNAT --to-destination {rule['to_ip']}:{rule['to_port']}"
             log_debug(command)
             subprocess.run(command, shell=True)
-            command = f"/usr/sbin/iptables -A FORWARD -p {rule['proto']} -d {rule['to_addr']} --dport {rule['to_port']} -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT"
+            command = f"/usr/sbin/iptables -A INPUT -p {rule['proto']} -d {rule['to_ip']} --dport {rule['to_port']} -j ACCEPT"
+            log_debug(command)
+            subprocess.run(command, shell=True)
+            command = f"/usr/sbin/iptables -A FORWARD -p {rule['proto']} -d {rule['to_ip']} --dport {rule['to_port']} -j ACCEPT"
             log_debug(command)
             subprocess.run(command, shell=True)
 
