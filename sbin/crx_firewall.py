@@ -47,10 +47,10 @@ def start_fw():
                 command += f" -p {rule['proto']}"
             if rule.get('dest',"0/0") != "0/0" and rule.get('dest',"") != "" :
                 command += f" -d {rule['dest']}"
-            if rule.get('to_source',"") != "":
-                command += f"  -j SNAT --to-source {rule['to_source']}"
-            else:
-                command += f"  -j MASQUERADE"
+            to_source=rule.get('to_source',"")
+            if to_source == "":
+                to_source = cranixconfig.CRANIX_SERVER_EXT_IP
+            command += f" -j SNAT --to-source {to_source}"
             log_debug(command)
             subprocess.run(command, shell=True)
             command = f"/usr/sbin/iptables -A FORWARD -s {rule['source']} -o {device} -j ACCEPT"
@@ -83,8 +83,8 @@ def stop_fw():
         subprocess.run(pre, shell=True)
 
 def open_fw():
-    for open in config.get("open_rules", []):
-        subprocess.run(pre, shell=True)
+    for cmd in config.get("open_rules", []):
+        subprocess.run(cmd, shell=True)
 
 if len(sys.argv) == 1 or sys.argv[1] == "start":
     start_fw()
