@@ -27,30 +27,32 @@ The firewall will be started by executing `/usr/sbin/crx_firewall.py`. This prog
 
 **open** The commands in section **open_rules** will be executed.
 
+**status** List all firewall rules including the package counts.
+
 The standard configuration after installing cranix-firewall:
 
 ```
 {
      "open_rules": [
-         "iptables -t mangle -F",
-         "iptables -t nat -F",
-         "iptables -F",
-         "iptables -P INPUT ACCEPT",
-         "iptables -P FORWARD ACCEPT",
-         "iptables -P OUTPUT ACCEPT"
+         "/usr/sbin/iptables -t mangle -F",
+         "/usr/sbin/iptables -t nat -F",
+         "/usr/sbin/iptables -F",
+         "/usr/sbin/iptables -P INPUT ACCEPT",
+         "/usr/sbin/iptables -P FORWARD ACCEPT",
+         "/usr/sbin/iptables -P OUTPUT ACCEPT"
     ],
     "pre_rules": [
-        "iptables -t mangle -F",
-        "iptables -t nat -F",
-        "iptables -F",
-        "iptables -P INPUT DROP",
-        "iptables -P FORWARD DROP",
-        "iptables -P OUTPUT ACCEPT",
-        "iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT",
-        "iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT",
-        "iptables -I INPUT -i lo -j ACCEPT",
-        "iptables -I FORWARD -o lo -j ACCEPT",
-        "iptables -I FORWARD -i lo -j ACCEPT"
+        "/usr/sbin/iptables -t mangle -F",
+        "/usr/sbin/iptables -t nat -F",
+        "/usr/sbin/iptables -F",
+        "/usr/sbin/iptables -P INPUT DROP",
+        "/usr/sbin/iptables -P FORWARD DROP",
+        "/usr/sbin/iptables -P OUTPUT ACCEPT",
+        "/usr/sbin/iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT",
+        "/usr/sbin/iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT",
+        "/usr/sbin/iptables -I INPUT -i lo -j ACCEPT",
+        "/usr/sbin/iptables -I FORWARD -o lo -j ACCEPT",
+        "/usr/sbin/iptables -I FORWARD -i lo -j ACCEPT"
     ],
     "devices": {
         "external": "#EXT_DEV#",
@@ -94,3 +96,15 @@ You can edit this configurtation file. After each change you have to start crani
 * The remote access rules you can find in port_forward_rules.external section.
 
 The rules for room access controll are dynamically and will not be written in the firewall configuration. Please note that after all start of the firewall the actual room access control rules will be removed and the default states will be set in all dynamically controllable room.
+
+In the /usr/share/cranix/tools/firewall/ you can find some tools to modify the static firewall configuration. All programms reads the values from the standard input.
+
+**add_fw_external_rule.py del_fw_external_rule.py**
+**add_fw_open_rules.py del_fw_open_rules.py**
+**add_fw_remote_access_rule.py del_fw_remote_access_rule.py**
+**add_fw_incomming.py del_fw_incomming.py**
+**set_fw_incomming.py**
+**add_fw_pre_rules.py del_fw_pre_rules.py**
+**convert_firewalld_to_cranix.py**
+**open_rooms.py**
+
