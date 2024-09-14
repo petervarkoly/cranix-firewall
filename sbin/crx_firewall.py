@@ -86,11 +86,17 @@ def open_fw():
     for cmd in config.get("open_rules", []):
         subprocess.run(cmd, shell=True)
 
+def fw_status():
+    subprocess.run("/usr/sbin/iptables -vnL", shell=True)
+    subprocess.run("/usr/sbin/iptables -t nat -vnL", shell=True)
+
 if len(sys.argv) == 1 or sys.argv[1] == "start":
     start_fw()
 elif sys.argv[1] == "stop":
     stop_fw()
 elif sys.argv[1] == "open":
     open_fw()
+elif sys.argv[1] == "status":
+    fw_status()
 else:
-    print("Unknown parameter. Valid parameters are start, stop, open")
+    print("Unknown parameter. Valid parameters are start, stop, open, status")
